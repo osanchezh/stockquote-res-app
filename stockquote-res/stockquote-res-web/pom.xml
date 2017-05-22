@@ -98,16 +98,7 @@
 			<type>jar</type>
 		</dependency>
 
-		<dependency>
-			<groupId>com.ibm</groupId>
-			<artifactId>com.ibm.mqjms</artifactId>
-			<version>${ibm-mq-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.ibm</groupId>
-			<artifactId>com.ibm.mq.jmqi</artifactId>
-			<version>${ibm-mq-version}</version>
-		</dependency>
+
 
 		<dependency>
 			<groupId>javax.jms</groupId>
