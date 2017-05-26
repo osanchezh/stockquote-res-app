@@ -5,8 +5,6 @@ package org.osh.stockquote.res.soa.fxinterpreter.model;
  * @author Stijn Strickx
  */
 public enum QuotesProperty {
-    
-    
 
     AfterHoursChangeRealtime("c8"), // After Hours Change (Realtime)
     AnnualizedGain("g3"), // Annualized Gain
