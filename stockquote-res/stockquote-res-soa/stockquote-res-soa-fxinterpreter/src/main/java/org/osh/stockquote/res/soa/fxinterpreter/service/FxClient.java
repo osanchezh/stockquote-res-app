@@ -19,7 +19,7 @@ public class FxClient {
     public void test() throws ClientProtocolException, IOException{
     	LOGGER.debug("ABC");
     	
-    	String url = "http://www.google.com/search?q=httpClient";
+    	String url = "http://download.finance.yahoo.com/d/quotes.csv?s=GOOG&f=nsc4xab2sa5sbb3sb6sl1sk3sd1t1opghva2kjm3m4sj2sss1sj1sf6sr1qdyee7e9e8rr5p6p5b4s6j4t8s7&e=.csv";
 
     	HttpClient client = HttpClientBuilder.create().build();
     	HttpGet request = new HttpGet(url);
@@ -38,6 +38,7 @@ public class FxClient {
     	String line = "";
     	while ((line = rd.readLine()) != null) {
     		result.append(line);
+    		LOGGER.debug("line="+line);
     	}
     	LOGGER.debug("result.length()="+result.length());
     	

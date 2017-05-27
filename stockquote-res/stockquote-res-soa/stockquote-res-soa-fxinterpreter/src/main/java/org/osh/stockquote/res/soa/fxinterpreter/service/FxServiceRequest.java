@@ -13,6 +13,6 @@ public class FxServiceRequest {
       Map<String, String> params = new LinkedHashMap<String, String>();
       params.put("s", stockQuotesRequest.getQuery());
       params.put("f", stockQuotesRequest.getFieldsString());
-      params.put("e", ".csv");
+      params.put("e", EXTENSION);
   }
 }
