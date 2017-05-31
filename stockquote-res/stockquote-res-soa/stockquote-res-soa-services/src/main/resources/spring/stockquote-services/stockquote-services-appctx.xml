@@ -9,6 +9,9 @@
          http://www.springframework.org/schema/context/spring-context.xsd
          http://www.springframework.org/schema/jdbc
          http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
-
-
+         
+    <context:annotation-config />   
+    <context:component-scan base-package="org.osh.stockquote.res.soa.services" />
+      
+    <import resource="classpath*:spring/stockquote/stockquote-persistence-appctx.xml" />
 </beans>
