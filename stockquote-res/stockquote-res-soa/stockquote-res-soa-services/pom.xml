@@ -9,7 +9,6 @@
 	<artifactId>stockquote-res-soa-services</artifactId>
 	<name>stockquote-res-soa-services</name>
 	<description>stockquote-res-soa-services</description>
-	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>

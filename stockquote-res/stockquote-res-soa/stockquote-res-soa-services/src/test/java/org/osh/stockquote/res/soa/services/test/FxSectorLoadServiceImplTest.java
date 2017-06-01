@@ -23,7 +23,7 @@ public class FxSectorLoadServiceImplTest {
 
 	@Test
 	public void test(){
-		fxSectorLoadService.load();
+		fxSectorLoadService.loadIndustry();
 	}
 	
 
