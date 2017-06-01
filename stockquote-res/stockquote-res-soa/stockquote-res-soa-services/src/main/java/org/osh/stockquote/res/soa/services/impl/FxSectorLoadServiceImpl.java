@@ -42,8 +42,8 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 	@Qualifier("companyListCsvParser")
 	private CompanyListCsvParser companyListCsvParser;
 
-	public void load() {
-		List<CompanyListCSV> lstCompanyListCSV= companyListCsvParser.parseCSVtoBean("C:\\code\\personal\\stockquote-res-app\\stockquote-res\\stockquote-res-soa\\stockquote-res-soa-services\\src\\main\\resources\\csv\\companylist_nasdaq.csv");
+	public void loadSector(String csv) {
+		List<CompanyListCSV> lstCompanyListCSV= companyListCsvParser.parseCSVtoBean(csv);
 		LOGGER.debug("size="+lstCompanyListCSV.size());
 		for(CompanyListCSV companyListCSV:lstCompanyListCSV){
 			Integer salida = fxSectorDAO.selectSectorByName(companyListCSV.getSector());
@@ -54,8 +54,8 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 		}
 	}
 	
-	public void loadIndustry(){
-		List<CompanyListCSV> lstCompanyListCSV= companyListCsvParser.parseCSVtoBean("C:\\code\\personal\\stockquote-res-app\\stockquote-res\\stockquote-res-soa\\stockquote-res-soa-services\\src\\main\\resources\\csv\\companylist_nasdaq.csv");
+	public void loadIndustry(String csv){
+		List<CompanyListCSV> lstCompanyListCSV= companyListCsvParser.parseCSVtoBean(csv);
 		for(CompanyListCSV companyListCSV:lstCompanyListCSV){
 			//Integer idSector =fxSectorDAO.selectSectorByName(companyListCSV.getSector());
 			//if( idSector !=null){
@@ -69,8 +69,8 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 		}  
 	}
 
-	public void loadIndustrySector(){
-		List<CompanyListCSV> lstCompanyListCSV= companyListCsvParser.parseCSVtoBean("C:\\code\\personal\\stockquote-res-app\\stockquote-res\\stockquote-res-soa\\stockquote-res-soa-services\\src\\main\\resources\\csv\\companylist_nasdaq.csv");
+	public void loadIndustrySector(String csv){
+		List<CompanyListCSV> lstCompanyListCSV= companyListCsvParser.parseCSVtoBean(csv);
 		for(CompanyListCSV companyListCSV:lstCompanyListCSV){
 			Integer idindustry = fxIndustryDAO.selectIndustryByName(companyListCSV.getIndustry());
 			if(idindustry!=null){
@@ -87,8 +87,8 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 		}  
 	}
 	
-	public void loadCompany(){
-		List<CompanyListCSV> lstCompanyListCSV= companyListCsvParser.parseCSVtoBean("C:\\code\\personal\\stockquote-res-app\\stockquote-res\\stockquote-res-soa\\stockquote-res-soa-services\\src\\main\\resources\\csv\\companylist_nasdaq.csv");
+	public void loadCompany(String csv){
+		List<CompanyListCSV> lstCompanyListCSV= companyListCsvParser.parseCSVtoBean(csv);
 		for(CompanyListCSV companyListCSV:lstCompanyListCSV){
 			Integer idindustry = fxIndustryDAO.selectIndustryByName(companyListCSV.getIndustry());
 			Integer idsector = fxSectorDAO.selectSectorByName(companyListCSV.getSector());
@@ -99,14 +99,14 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 		}
 	}
 	
-	public void loadSymbol(){
-		List<CompanyListCSV> lstCompanyListCSV= companyListCsvParser.parseCSVtoBean("C:\\code\\personal\\stockquote-res-app\\stockquote-res\\stockquote-res-soa\\stockquote-res-soa-services\\src\\main\\resources\\csv\\companylist_nasdaq.csv");
+	public void loadSymbol(String csv, int idstockexchange){
+		List<CompanyListCSV> lstCompanyListCSV= companyListCsvParser.parseCSVtoBean(csv);
 		for(CompanyListCSV companyListCSV:lstCompanyListCSV){
 			Integer idindustry = fxIndustryDAO.selectIndustryByName(companyListCSV.getIndustry());
 			Integer idsector = fxSectorDAO.selectSectorByName(companyListCSV.getSector());
 			Integer idCompany = fxcCompanyDAO.selectCompanyByName(companyListCSV.getName(),idindustry,idsector);
 			if(idCompany!=null){
-				fxcSymbolDAO.insertSymbol(companyListCSV.getSymbol(), idCompany, 400, companyListCSV.getSummaryQuote());
+				fxcSymbolDAO.insertSymbol(companyListCSV.getSymbol(), idCompany, idstockexchange, companyListCSV.getSummaryQuote());
 			}
 		}
 	}

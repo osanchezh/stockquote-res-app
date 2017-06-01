@@ -20,13 +20,42 @@ public class FxSectorLoadServiceImplTest {
 	@Qualifier("fxSectorLoadService")
 	private FxSectorLoadService fxSectorLoadService;
 	
-
-	@Test
 	public void test(){
 		//fxSectorLoadService.loadIndustry();
 		//fxSectorLoadService.loadIndustrySector();
 		//fxSectorLoadService.loadCompany();
-		fxSectorLoadService.loadSymbol();
+		String url="C:\\code\\personal\\stockquote-res-app\\stockquote-res\\stockquote-res-soa\\stockquote-res-soa-services\\src\\main\\resources\\csv\\companylist_nasdaq.csv";
+		String url3="C:\\code\\personal\\stockquote-res-app\\stockquote-res\\stockquote-res-soa\\stockquote-res-soa-services\\src\\main\\resources\\csv\\companylist_nyse.csv";
+
+		//fxSectorLoadService.loadSymbol(url,400);
+	}
+	
+	public void loadNasdaq(){
+		String url2="C:\\code\\personal\\stockquote-res-app\\stockquote-res\\stockquote-res-soa\\stockquote-res-soa-services\\src\\main\\resources\\csv\\companylist_nasdaq.csv";
+		//fxSectorLoadService.loadSector(url2);
+		//fxSectorLoadService.loadIndustry(url2);
+		//fxSectorLoadService.loadIndustrySector(url2);
+		//fxSectorLoadService.loadCompany(url2);
+		fxSectorLoadService.loadSymbol(url2, 400);
+	}
+	
+	public void loadAmex(){
+		String url2="C:\\code\\personal\\stockquote-res-app\\stockquote-res\\stockquote-res-soa\\stockquote-res-soa-services\\src\\main\\resources\\csv\\companylist_amex.csv";
+		//fxSectorLoadService.loadSector(url2);
+		//fxSectorLoadService.loadIndustry(url2);
+		//fxSectorLoadService.loadIndustrySector(url2);
+		//fxSectorLoadService.loadCompany(url2);
+		fxSectorLoadService.loadSymbol(url2, 401);
+	}
+	
+	//@Test
+	public void loadNyse(){
+		String url2="C:\\code\\personal\\stockquote-res-app\\stockquote-res\\stockquote-res-soa\\stockquote-res-soa-services\\src\\main\\resources\\csv\\companylist_nyse.csv";
+		//fxSectorLoadService.loadSector(url2);
+		//fxSectorLoadService.loadIndustry(url2);
+		//fxSectorLoadService.loadIndustrySector(url2);
+		//fxSectorLoadService.loadCompany(url2);
+		fxSectorLoadService.loadSymbol(url2, 402);
 	}
 	
 
