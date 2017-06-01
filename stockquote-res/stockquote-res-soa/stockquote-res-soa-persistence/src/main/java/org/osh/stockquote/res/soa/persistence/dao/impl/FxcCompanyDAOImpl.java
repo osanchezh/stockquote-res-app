@@ -1,35 +1,27 @@
 package org.osh.stockquote.res.soa.persistence.dao.impl;
 
-
-import org.osh.stockquote.res.soa.persistence.dao.FxSectorDAO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.osh.stockquote.res.soa.persistence.dao.FxcCompanyDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-@Repository("fxSectorDAO")
-public class FxSectorDAOImpl implements FxSectorDAO {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FxSectorDAOImpl.class);
+@Repository("fxcCompanyDAO")
+public class FxcCompanyDAOImpl implements FxcCompanyDAO {
 
 	@Autowired
     @Qualifier("fxExchangeNamedParameter")
     private NamedParameterJdbcTemplate fxExchangeNamedParameter;
-
-	public Integer selectCountSectorByName(String name)  {
-        String query = "select count(idsector) from FXC_SECTOR where FXC_SECTOR.name=:name";
-        MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("name", name);
-        return fxExchangeNamedParameter.queryForObject(query, parameters, Integer.class);
-	}
 	
-	public Integer selectSectorByName(String name)  {
-        String query = "select idsector from FXC_SECTOR where FXC_SECTOR.name=:name";
-        MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("name", name);
+
+	@Override
+	public Integer selectCompanyByName(String name,Integer idindustry, Integer idsector) {
+		String query = "select idcompany from fxc_company where name=:name and idindustry=:idindustry and idsector=:idsector";
+	    MapSqlParameterSource parameters = new MapSqlParameterSource();
+	    parameters.addValue("name", name);
+	    parameters.addValue("idindustry", idindustry);
+	    parameters.addValue("idsector", idsector);
         Integer resultado=null;;
         try{
           resultado = fxExchangeNamedParameter.queryForObject(query, parameters, Integer.class);
@@ -38,16 +30,23 @@ public class FxSectorDAOImpl implements FxSectorDAO {
         }
         return resultado;
 	}
-	
-    public int insertSector(String name,String description){
-    	String query = "INSERT INTO FXC_SECTOR(name,description) values (:name,:description)";
+
+	@Override
+	public int insertCompany(Integer idindustry, Integer idsector, String name, String description, String marketcap, String ipoyear) {
+		String query = "INSERT INTO fxc_company(idindustry,idsector,name,description,marketcap,ipoyear) values (:idindustry,:idsector,:name,:description,:marketcap,:ipoyear)";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("idindustry", idindustry);
+        parameters.addValue("idsector", idsector);
         parameters.addValue("name", name);
         parameters.addValue("description", description);
+        parameters.addValue("marketcap", marketcap);
+        parameters.addValue("ipoyear", ipoyear);
+
+       // parameters.addValue("idsector", idSector);
     	return fxExchangeNamedParameter.update(query, parameters);
-    }
-    
-	
+	}
+
+
 	public NamedParameterJdbcTemplate getFxExchangeNamedParameter() {
 		return fxExchangeNamedParameter;
 	}

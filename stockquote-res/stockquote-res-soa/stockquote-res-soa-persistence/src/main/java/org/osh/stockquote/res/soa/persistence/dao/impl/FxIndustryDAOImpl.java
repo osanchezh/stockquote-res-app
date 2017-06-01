@@ -3,6 +3,7 @@ package org.osh.stockquote.res.soa.persistence.dao.impl;
 import org.osh.stockquote.res.soa.persistence.dao.FxIndustryDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -15,26 +16,39 @@ public class FxIndustryDAOImpl implements FxIndustryDAO {
 	
 
 	@Override
-	public Integer selectCountIndustryByName(String name, Integer idSector) {
-		  String query = "select count(idindustry) from FX_INDUSTRY where  FX_INDUSTRY.idsector=:idsector and FX_INDUSTRY.name=:name ";
+	public Integer selectCountIndustryByName(String name) {
+		  String query = "select count(idindustry) from FXC_INDUSTRY where FXc_INDUSTRY.name=:name ";
 	        MapSqlParameterSource parameters = new MapSqlParameterSource();
 	        parameters.addValue("name", name);
-	        parameters.addValue("idsector", idSector);
+	        //parameters.addValue("idsector", idSector);
 	        return fxExchangeNamedParameter.queryForObject(query, parameters, Integer.class);
 	}
 
 	@Override
-	public int insertCambStageConfirmacion(Integer idSector, String name, String description) {
-		String query = "INSERT INTO FX_INDUSTRY(idsector,name,description) values (:idsector,:name,:description)";
+	public int insertIndustry(String name, String description) {
+		String query = "INSERT INTO FXC_INDUSTRY(name,description) values (:name,:description)";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("name", name);
         parameters.addValue("description", description);
-        parameters.addValue("idsector", idSector);
+       // parameters.addValue("idsector", idSector);
 
     	return fxExchangeNamedParameter.update(query, parameters);
 	}
 	
-
+	@Override
+	public Integer selectIndustryByName(String name) {
+		  String query = "select idindustry from FXC_INDUSTRY where FXc_INDUSTRY.name=:name ";
+	        MapSqlParameterSource parameters = new MapSqlParameterSource();
+	        parameters.addValue("name", name);
+	        //parameters.addValue("idsector", idSector);
+	        Integer resultado=null;;
+	        try{
+	          resultado = fxExchangeNamedParameter.queryForObject(query, parameters, Integer.class);
+	        }catch(EmptyResultDataAccessException exception){
+	        	resultado =null;
+	        }
+	        return resultado;
+	}
 	public NamedParameterJdbcTemplate getFxExchangeNamedParameter() {
 		return fxExchangeNamedParameter;
 	}
@@ -42,5 +56,7 @@ public class FxIndustryDAOImpl implements FxIndustryDAO {
 	public void setFxExchangeNamedParameter(NamedParameterJdbcTemplate fxExchangeNamedParameter) {
 		this.fxExchangeNamedParameter = fxExchangeNamedParameter;
 	}
+
+
 
 }
