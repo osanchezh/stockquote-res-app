@@ -57,7 +57,10 @@ public class FxSectorLoadServiceImplTest {
 		//fxSectorLoadService.loadCompany(url2);
 		fxSectorLoadService.loadSymbol(url2, 402);
 	}
-	
+	@Test
+	public void loadHistory(){
+		fxSectorLoadService.loadHistoryQuote(400);
+	}
 
 	public FxSectorLoadService getFxSectorLoadService() {
 		return fxSectorLoadService;
