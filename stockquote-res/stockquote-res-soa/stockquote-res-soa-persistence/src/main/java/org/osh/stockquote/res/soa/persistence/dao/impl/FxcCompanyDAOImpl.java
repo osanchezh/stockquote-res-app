@@ -32,15 +32,14 @@ public class FxcCompanyDAOImpl implements FxcCompanyDAO {
 	}
 
 	@Override
-	public int insertCompany(Integer idindustry, Integer idsector, String name, String description, String marketcap, String ipoyear) {
-		String query = "INSERT INTO fxc_company(idindustry,idsector,name,description,marketcap,ipoyear) values (:idindustry,:idsector,:name,:description,:marketcap,:ipoyear)";
+	public int insertCompany(Integer idindustry, Integer idsector, String name, String description) {
+		String query = "INSERT INTO fxc_company(idindustry,idsector,name,description) values (:idindustry,:idsector,:name,:description)";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("idindustry", idindustry);
         parameters.addValue("idsector", idsector);
         parameters.addValue("name", name);
         parameters.addValue("description", description);
-        parameters.addValue("marketcap", marketcap);
-        parameters.addValue("ipoyear", ipoyear);
+
 
        // parameters.addValue("idsector", idSector);
     	return fxExchangeNamedParameter.update(query, parameters);

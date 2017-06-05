@@ -14,6 +14,7 @@ import org.osh.stockquote.res.soa.persistence.dao.FxcCompanyDAO;
 import org.osh.stockquote.res.soa.persistence.dao.FxcSectorIndustryDAO;
 import org.osh.stockquote.res.soa.persistence.dao.FxcSymbolDAO;
 import org.osh.stockquote.res.soa.persistence.dao.FxtHistoricalQuoteDAO;
+import org.osh.stockquote.res.soa.persistence.dao.FxtStockDAO;
 import org.osh.stockquote.res.soa.services.FxSectorLoadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,11 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 	@Autowired
 	@Qualifier("fxcSymbolDAO")
 	private FxcSymbolDAO fxcSymbolDAO;
+
+	@Autowired
+	@Qualifier("fxtStockDAO")
+	private FxtStockDAO fxtStockDAO;
+	
 
 	@Autowired
 	@Qualifier("fxtHistoricalQuoteDAO")
@@ -111,8 +117,8 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 			Integer idsector = fxSectorDAO.selectSectorByName(companyListCSV.getSector());
 			Integer idCompany = fxcCompanyDAO.selectCompanyByName(companyListCSV.getName(), idindustry, idsector);
 			if (idCompany == null) {
-				fxcCompanyDAO.insertCompany(idindustry, idsector, companyListCSV.getName(), companyListCSV.getName(),
-						companyListCSV.getMarketCap(), companyListCSV.getIpoYear());
+				fxcCompanyDAO.insertCompany(idindustry, idsector, companyListCSV.getName(), companyListCSV.getName()
+						);
 			}
 		}
 	}
@@ -125,11 +131,39 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 			Integer idCompany = fxcCompanyDAO.selectCompanyByName(companyListCSV.getName(), idindustry, idsector);
 			if (idCompany != null) {
 				fxcSymbolDAO.insertSymbol(companyListCSV.getSymbol(), idCompany, idstockexchange,
-						companyListCSV.getSummaryQuote());
+						companyListCSV.getSummaryQuote(),companyListCSV.getMarketCap(), companyListCSV.getIpoYear());
 			}
 		}
 	}
+    public void loadStock(String csv, int idstockexchange){
+		List<CompanyListCSV> lstCompanyListCSV = companyListCsvParser.parseCSVtoBean(csv);
+		for (CompanyListCSV companyListCSV : lstCompanyListCSV) {
+			Integer idsymbol = fxcSymbolDAO.selectSymbolByNameAndIdStock(companyListCSV.getSymbol(), idstockexchange);
+			if(idsymbol!=null){
+				Integer idStock= fxtStockDAO.selectIdStockByIdSymbol(idsymbol);
+				if(idStock==null){
+					Calendar today = Calendar.getInstance();
+					today.set(Calendar.YEAR, 2017);
+					today.set(Calendar.MONTH, 5);
+					today.set(Calendar.DATE, 31);
 
+					Calendar from = (Calendar) today.clone();
+					from.add(Calendar.YEAR, -1);
+
+					try{
+						Stock stock = YahooFinance.get(companyListCSV.getSymbol(), from, today, Interval.DAILY);
+						if(stock!=null){
+						fxtStockDAO.insertStock(idsymbol, stock.getCurrency(), stock.getStockExchange());
+						}
+						}catch(FileNotFoundException e){
+							LOGGER.error(e.getMessage(), e);
+						} catch (IOException e) {
+							LOGGER.error(e.getMessage(), e);
+						}
+				}
+			}
+		}
+    }
 	public void loadHistoryQuote(int idstockexchange) {
 		List<FxcSymbol> lstSymbol = fxcSymbolDAO.selectSymbolByIdStockExchange(idstockexchange);
 
@@ -164,6 +198,15 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 		}
 	}
 
+
+	public FxtStockDAO getFxtStockDAO() {
+		return fxtStockDAO;
+	}
+
+	public void setFxtStockDAO(FxtStockDAO fxtStockDAO) {
+		this.fxtStockDAO = fxtStockDAO;
+	}
+	
 	public FxcSymbolDAO getFxcSymbolDAO() {
 		return fxcSymbolDAO;
 	}

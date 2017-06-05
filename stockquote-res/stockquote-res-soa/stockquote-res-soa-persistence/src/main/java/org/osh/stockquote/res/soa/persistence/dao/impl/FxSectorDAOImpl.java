@@ -20,14 +20,14 @@ public class FxSectorDAOImpl implements FxSectorDAO {
     private NamedParameterJdbcTemplate fxExchangeNamedParameter;
 
 	public Integer selectCountSectorByName(String name)  {
-        String query = "select count(idsector) from FXC_SECTOR where FXC_SECTOR.name=:name";
+        String query = "select count(idsector) from fxc_sector where name=:name";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("name", name);
         return fxExchangeNamedParameter.queryForObject(query, parameters, Integer.class);
 	}
 	
 	public Integer selectSectorByName(String name)  {
-        String query = "select idsector from FXC_SECTOR where FXC_SECTOR.name=:name";
+        String query = "select idsector from fxc_sector where name=:name";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("name", name);
         Integer resultado=null;;
@@ -40,7 +40,7 @@ public class FxSectorDAOImpl implements FxSectorDAO {
 	}
 	
     public int insertSector(String name,String description){
-    	String query = "INSERT INTO FXC_SECTOR(name,description) values (:name,:description)";
+    	String query = "INSERT INTO fxc_sector(name,description) values (:name,:description)";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("name", name);
         parameters.addValue("description", description);

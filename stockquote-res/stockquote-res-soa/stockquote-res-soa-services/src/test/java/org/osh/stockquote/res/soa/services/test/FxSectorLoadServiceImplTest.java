@@ -29,14 +29,18 @@ public class FxSectorLoadServiceImplTest {
 
 		//fxSectorLoadService.loadSymbol(url,400);
 	}
-	
+	@Test
 	public void loadNasdaq(){
-		String url2="C:\\code\\personal\\stockquote-res-app\\stockquote-res\\stockquote-res-soa\\stockquote-res-soa-services\\src\\main\\resources\\csv\\companylist_nasdaq.csv";
-		//fxSectorLoadService.loadSector(url2);
-		//fxSectorLoadService.loadIndustry(url2);
-		//fxSectorLoadService.loadIndustrySector(url2);
-		//fxSectorLoadService.loadCompany(url2);
-		fxSectorLoadService.loadSymbol(url2, 400);
+		String urlwindows="C:\\code\\personal\\stockquote-res-app\\stockquote-res\\stockquote-res-soa\\stockquote-res-soa-services\\src\\main\\resources\\csv\\companylist_nasdaq.csv";
+		String urllinux="/home/osh/code/java/doctorado/stockquote/stockquote-res-app/stockquote-res/stockquote-res-soa/stockquote-res-soa-services/src/main/resources/csv/companylist_nasdaq.csv";
+
+		//fxSectorLoadService.loadSector(urllinux);
+		//fxSectorLoadService.loadIndustry(urllinux);
+		//fxSectorLoadService.loadIndustrySector(urllinux);
+		//fxSectorLoadService.loadCompany(urllinux);
+		//fxSectorLoadService.loadSymbol(urllinux, 1);
+		
+		fxSectorLoadService.loadStock(urllinux, 1);
 	}
 	
 	public void loadAmex(){
@@ -48,7 +52,7 @@ public class FxSectorLoadServiceImplTest {
 		fxSectorLoadService.loadSymbol(url2, 401);
 	}
 	
-	//@Test
+	//
 	public void loadNyse(){
 		String url2="C:\\code\\personal\\stockquote-res-app\\stockquote-res\\stockquote-res-soa\\stockquote-res-soa-services\\src\\main\\resources\\csv\\companylist_nyse.csv";
 		//fxSectorLoadService.loadSector(url2);
@@ -57,7 +61,7 @@ public class FxSectorLoadServiceImplTest {
 		//fxSectorLoadService.loadCompany(url2);
 		fxSectorLoadService.loadSymbol(url2, 402);
 	}
-	@Test
+	//@Test
 	public void loadHistory(){
 		fxSectorLoadService.loadHistoryQuote(400);
 	}

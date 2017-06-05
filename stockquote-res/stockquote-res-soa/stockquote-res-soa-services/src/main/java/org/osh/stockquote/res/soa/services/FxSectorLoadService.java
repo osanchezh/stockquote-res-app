@@ -6,5 +6,6 @@ public interface FxSectorLoadService {
 	void loadIndustrySector(String csv);
 	void loadCompany(String csv);
 	void loadSymbol(String csv, int idstockexchange);
+	void loadStock(String csv, int idstockexchange);
 	void loadHistoryQuote(int idstockexchange);
 }

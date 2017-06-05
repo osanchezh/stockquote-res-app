@@ -17,7 +17,7 @@ public class FxIndustryDAOImpl implements FxIndustryDAO {
 
 	@Override
 	public Integer selectCountIndustryByName(String name) {
-		  String query = "select count(idindustry) from FXC_INDUSTRY where FXc_INDUSTRY.name=:name ";
+		  String query = "select count(idindustry) from fxc_industry where name=:name ";
 	        MapSqlParameterSource parameters = new MapSqlParameterSource();
 	        parameters.addValue("name", name);
 	        //parameters.addValue("idsector", idSector);
@@ -26,7 +26,7 @@ public class FxIndustryDAOImpl implements FxIndustryDAO {
 
 	@Override
 	public int insertIndustry(String name, String description) {
-		String query = "INSERT INTO FXC_INDUSTRY(name,description) values (:name,:description)";
+		String query = "INSERT INTO fxc_industry(name,description) values (:name,:description)";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("name", name);
         parameters.addValue("description", description);
@@ -37,11 +37,11 @@ public class FxIndustryDAOImpl implements FxIndustryDAO {
 	
 	@Override
 	public Integer selectIndustryByName(String name) {
-		  String query = "select idindustry from FXC_INDUSTRY where FXc_INDUSTRY.name=:name ";
+		  String query = "select idindustry from fxc_industry where fxc_industry.name=:name ";
 	        MapSqlParameterSource parameters = new MapSqlParameterSource();
 	        parameters.addValue("name", name);
 	        //parameters.addValue("idsector", idSector);
-	        Integer resultado=null;;
+	        Integer resultado=null;
 	        try{
 	          resultado = fxExchangeNamedParameter.queryForObject(query, parameters, Integer.class);
 	        }catch(EmptyResultDataAccessException exception){
