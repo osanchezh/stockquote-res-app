@@ -15,6 +15,8 @@ import org.osh.stockquote.res.soa.persistence.dao.FxcSectorIndustryDAO;
 import org.osh.stockquote.res.soa.persistence.dao.FxcSymbolDAO;
 import org.osh.stockquote.res.soa.persistence.dao.FxtHistoricalQuoteDAO;
 import org.osh.stockquote.res.soa.persistence.dao.FxtStockDAO;
+import org.osh.stockquote.res.soa.persistence.dao.FxtStockQuoteDAO;
+import org.osh.stockquote.res.soa.persistence.dao.FxtStockStatsDAO;
 import org.osh.stockquote.res.soa.services.FxSectorLoadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,9 +62,16 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 	private FxtHistoricalQuoteDAO fxtHistoricalQuoteDAO;
 
 	@Autowired
+	@Qualifier("fxtStockStatsDAO")
+	private FxtStockStatsDAO fxtStockStatsDAO;
+	
+	@Autowired
 	@Qualifier("companyListCsvParser")
 	private CompanyListCsvParser companyListCsvParser;
 
+	@Autowired
+	@Qualifier("fxtStockQuoteDAO")
+	private FxtStockQuoteDAO fxtStockQuoteDAO;
 	public void loadSector(String csv) {
 		List<CompanyListCSV> lstCompanyListCSV = companyListCsvParser.parseCSVtoBean(csv);
 		LOGGER.debug("size=" + lstCompanyListCSV.size());
@@ -205,6 +214,93 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 			LOGGER.error(e.getMessage(), e);
 		}
 	}
+	
+
+	public void loadStockStats(int idstockexchange) {
+		List<FxcSymbol> lstSymbol = fxcSymbolDAO.selectSymbolByIdStockExchange(idstockexchange);
+
+		Calendar today = Calendar.getInstance();
+		today.set(Calendar.YEAR, 2017);
+		today.set(Calendar.MONTH, 5);
+		today.set(Calendar.DATE, 31);
+
+		Calendar from = (Calendar) today.clone();
+		from.add(Calendar.YEAR, -2);
+		try {
+			LOGGER.debug("symbol.total=" + lstSymbol.size());
+			int contador = 0;
+			for (FxcSymbol fxcSymbol : lstSymbol) {
+				LOGGER.debug("CHECK.fxcSymbol=" + fxcSymbol.toString());
+				if (contador >= 1963) {
+					Integer idstock = fxtStockDAO.selectIdStockByIdSymbol(fxcSymbol.getIdSymbol());
+					if (idstock != null) {
+						try {
+							Stock stock = YahooFinance.get(fxcSymbol.getSymbol(), from, today, Interval.DAILY);
+							Integer idstockstats= fxtStockStatsDAO.selectIdByIdStock(idstock);
+							if(idstockstats==null){
+								fxtStockStatsDAO.insertStockStats(stock.getStats(), idstock);
+							}
+
+						} catch (FileNotFoundException e) {
+							LOGGER.error(e.getMessage(), e);
+						}
+					}
+				}
+				contador++;
+
+			}
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+		}
+	}
+	
+
+	public void loadStockQuote(int idstockexchange) {
+		List<FxcSymbol> lstSymbol = fxcSymbolDAO.selectSymbolByIdStockExchange(idstockexchange);
+
+		Calendar today = Calendar.getInstance();
+		today.set(Calendar.YEAR, 2017);
+		today.set(Calendar.MONTH, 5);
+		today.set(Calendar.DATE, 31);
+
+		Calendar from = (Calendar) today.clone();
+		from.add(Calendar.YEAR, -2);
+		try {
+			LOGGER.debug("symbol.total=" + lstSymbol.size());
+			int contador = 0;
+			for (FxcSymbol fxcSymbol : lstSymbol) {
+				LOGGER.debug("CHECK.fxcSymbol=" + fxcSymbol.toString());
+				if (contador >= 148) {
+					Integer idstock = fxtStockDAO.selectIdStockByIdSymbol(fxcSymbol.getIdSymbol());
+					if (idstock != null) {
+						try {
+							Stock stock = YahooFinance.get(fxcSymbol.getSymbol(), from, today, Interval.DAILY);
+							Integer idstockstats= fxtStockQuoteDAO.selectIdByIdStock(idstock);
+							if(idstockstats==null){
+								fxtStockQuoteDAO.insertStockQuote(stock.getQuote(), idstock);
+							}
+
+						} catch (FileNotFoundException e) {
+							LOGGER.error(e.getMessage(), e);
+						}
+					}
+				}
+				contador++;
+
+			}
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+		}
+	}
+	
+	public FxtStockStatsDAO getFxtStockStatsDAO() {
+		return fxtStockStatsDAO;
+	}
+
+	public void setFxtStockStatsDAO(FxtStockStatsDAO fxtStockStatsDAO) {
+		this.fxtStockStatsDAO = fxtStockStatsDAO;
+	}
+
 
 	public FxtStockDAO getFxtStockDAO() {
 		return fxtStockDAO;
@@ -269,4 +365,13 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 	public void setFxtHistoricalQuoteDAO(FxtHistoricalQuoteDAO fxtHistoricalQuoteDAO) {
 		this.fxtHistoricalQuoteDAO = fxtHistoricalQuoteDAO;
 	}
+
+	public FxtStockQuoteDAO getFxtStockQuoteDAO() {
+		return fxtStockQuoteDAO;
+	}
+
+	public void setFxtStockQuoteDAO(FxtStockQuoteDAO fxtStockQuoteDAO) {
+		this.fxtStockQuoteDAO = fxtStockQuoteDAO;
+	}
+
 }

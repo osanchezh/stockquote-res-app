@@ -41,7 +41,10 @@ public class FxSectorLoadServiceImplTest {
 		//fxSectorLoadService.loadSymbol(urllinux, 1);
 		
 		//fxSectorLoadService.loadStock(urllinux, 1);
-		fxSectorLoadService.loadHistoryQuote(1);
+		//fxSectorLoadService.loadHistoryQuote(1);
+		//fxSectorLoadService.loadStockStats(1);
+		fxSectorLoadService.loadStockQuote(1);
+
 
 	}
 	
