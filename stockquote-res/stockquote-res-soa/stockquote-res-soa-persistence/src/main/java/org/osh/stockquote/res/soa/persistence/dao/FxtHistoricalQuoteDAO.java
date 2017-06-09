@@ -5,6 +5,6 @@ import java.util.Date;
 import yahoofinance.histquotes.HistoricalQuote;
 
 public interface FxtHistoricalQuoteDAO {
-  Integer selectHistoricalQuote(int idsymbol,Date date);
-  Integer insertHistoricalQuote(HistoricalQuote historicalQuote, int idsymbol);
+  Integer selectHistoricalQuote(int idstock,Date date);
+  Integer insertHistoricalQuote(HistoricalQuote historicalQuote, int idstock);
 }

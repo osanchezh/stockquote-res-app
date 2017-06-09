@@ -54,7 +54,6 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 	@Autowired
 	@Qualifier("fxtStockDAO")
 	private FxtStockDAO fxtStockDAO;
-	
 
 	@Autowired
 	@Qualifier("fxtHistoricalQuoteDAO")
@@ -117,8 +116,7 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 			Integer idsector = fxSectorDAO.selectSectorByName(companyListCSV.getSector());
 			Integer idCompany = fxcCompanyDAO.selectCompanyByName(companyListCSV.getName(), idindustry, idsector);
 			if (idCompany == null) {
-				fxcCompanyDAO.insertCompany(idindustry, idsector, companyListCSV.getName(), companyListCSV.getName()
-						);
+				fxcCompanyDAO.insertCompany(idindustry, idsector, companyListCSV.getName(), companyListCSV.getName());
 			}
 		}
 	}
@@ -131,17 +129,18 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 			Integer idCompany = fxcCompanyDAO.selectCompanyByName(companyListCSV.getName(), idindustry, idsector);
 			if (idCompany != null) {
 				fxcSymbolDAO.insertSymbol(companyListCSV.getSymbol(), idCompany, idstockexchange,
-						companyListCSV.getSummaryQuote(),companyListCSV.getMarketCap(), companyListCSV.getIpoYear());
+						companyListCSV.getSummaryQuote(), companyListCSV.getMarketCap(), companyListCSV.getIpoYear());
 			}
 		}
 	}
-    public void loadStock(String csv, int idstockexchange){
+
+	public void loadStock(String csv, int idstockexchange) {
 		List<CompanyListCSV> lstCompanyListCSV = companyListCsvParser.parseCSVtoBean(csv);
 		for (CompanyListCSV companyListCSV : lstCompanyListCSV) {
 			Integer idsymbol = fxcSymbolDAO.selectSymbolByNameAndIdStock(companyListCSV.getSymbol(), idstockexchange);
-			if(idsymbol!=null){
-				Integer idStock= fxtStockDAO.selectIdStockByIdSymbol(idsymbol);
-				if(idStock==null){
+			if (idsymbol != null) {
+				Integer idStock = fxtStockDAO.selectIdStockByIdSymbol(idsymbol);
+				if (idStock == null) {
 					Calendar today = Calendar.getInstance();
 					today.set(Calendar.YEAR, 2017);
 					today.set(Calendar.MONTH, 5);
@@ -150,20 +149,21 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 					Calendar from = (Calendar) today.clone();
 					from.add(Calendar.YEAR, -1);
 
-					try{
+					try {
 						Stock stock = YahooFinance.get(companyListCSV.getSymbol(), from, today, Interval.DAILY);
-						if(stock!=null){
-						fxtStockDAO.insertStock(idsymbol, stock.getCurrency(), stock.getStockExchange());
+						if (stock != null) {
+							fxtStockDAO.insertStock(idsymbol, stock.getCurrency(), stock.getStockExchange());
 						}
-						}catch(FileNotFoundException e){
-							LOGGER.error(e.getMessage(), e);
-						} catch (IOException e) {
-							LOGGER.error(e.getMessage(), e);
-						}
+					} catch (FileNotFoundException e) {
+						LOGGER.error(e.getMessage(), e);
+					} catch (IOException e) {
+						LOGGER.error(e.getMessage(), e);
+					}
 				}
 			}
 		}
-    }
+	}
+
 	public void loadHistoryQuote(int idstockexchange) {
 		List<FxcSymbol> lstSymbol = fxcSymbolDAO.selectSymbolByIdStockExchange(idstockexchange);
 
@@ -175,29 +175,36 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 		Calendar from = (Calendar) today.clone();
 		from.add(Calendar.YEAR, -1);
 		try {
-			LOGGER.debug("symbol.total="+lstSymbol.size());
-			
+			LOGGER.debug("symbol.total=" + lstSymbol.size());
+			int contador = 0;
 			for (FxcSymbol fxcSymbol : lstSymbol) {
 				LOGGER.debug("CHECK.fxcSymbol=" + fxcSymbol.toString());
-				try{
-				Stock stock = YahooFinance.get(fxcSymbol.getSymbol(), from, today, Interval.DAILY);
-				 for(HistoricalQuote histQuote : stock.getHistory()) {
-				      Integer guardado=fxtHistoricalQuoteDAO.selectHistoricalQuote(fxcSymbol.getIdSymbol(), histQuote.getDate().getTime());
-				      LOGGER.debug("ENCONTRADO="+guardado);
-				      if(guardado==0){
-				    	  LOGGER.debug("GUARDANDO="+fxcSymbol.getSymbol()+",date="+histQuote.getDate().getTime());
-				         fxtHistoricalQuoteDAO.insertHistoricalQuote(histQuote, fxcSymbol.getIdSymbol());
-				      }
-				 }
-				}catch(FileNotFoundException e){
-					LOGGER.error(e.getMessage(), e);
+				if (contador >= 1481) {
+					Integer idstock = fxtStockDAO.selectIdStockByIdSymbol(fxcSymbol.getIdSymbol());
+					if (idstock != null) {
+						try {
+							Stock stock = YahooFinance.get(fxcSymbol.getSymbol(), from, today, Interval.DAILY);
+							for (HistoricalQuote histQuote : stock.getHistory()) {
+								Integer guardado = fxtHistoricalQuoteDAO.selectHistoricalQuote(idstock,
+										histQuote.getDate().getTime());
+								LOGGER.debug("ENCONTRADO=" + guardado);
+								if (guardado == 0) {
+									LOGGER.debug("GUARDANDO=" + fxcSymbol.getSymbol() + ",date="
+											+ histQuote.getDate().getTime());
+									fxtHistoricalQuoteDAO.insertHistoricalQuote(histQuote, idstock);
+								}
+							}
+						} catch (FileNotFoundException e) {
+							LOGGER.error(e.getMessage(), e);
+						}
+					}
 				}
+				contador++;
 			}
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
 	}
-
 
 	public FxtStockDAO getFxtStockDAO() {
 		return fxtStockDAO;
@@ -206,7 +213,7 @@ public class FxSectorLoadServiceImpl implements FxSectorLoadService {
 	public void setFxtStockDAO(FxtStockDAO fxtStockDAO) {
 		this.fxtStockDAO = fxtStockDAO;
 	}
-	
+
 	public FxcSymbolDAO getFxcSymbolDAO() {
 		return fxcSymbolDAO;
 	}

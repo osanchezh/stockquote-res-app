@@ -23,19 +23,19 @@ public class FxtHistoricalQuoteDAOImpl implements FxtHistoricalQuoteDAO {
 	
 
 	@Override
-	public Integer selectHistoricalQuote(int idsymbol, Date date) {
-        String query = "select count(idsymbol) from fxt_historicalquote where idsymbol=:idsymbol and date=:date";
+	public Integer selectHistoricalQuote(int idstock, Date date) {
+        String query = "select count(idstock) from fxt_historicalquote where idstock=:idstock and date=:date";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("idsymbol", idsymbol);
+        parameters.addValue("idstock", idstock);
         parameters.addValue("date", date);
         return fxExchangeNamedParameter.queryForObject(query, parameters, Integer.class);
 	}
 
 	@Override
-	public Integer insertHistoricalQuote(HistoricalQuote historicalQuote, int idsymbol) {
-		String query = "INSERT INTO fxt_historicalquote (idsymbol,date,open,low,high,close,adjclose,volume) VALUES (:idsymbol,:date,:open,:low,:high,:close,:adjclose,:volume)";
+	public Integer insertHistoricalQuote(HistoricalQuote historicalQuote, int idstock) {
+		String query = "INSERT INTO fxt_historicalquote (idstock,date,open,low,high,close,adjclose,volume) VALUES (:idstock,:date,:open,:low,:high,:close,:adjclose,:volume)";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("idsymbol", idsymbol);
+        parameters.addValue("idstock", idstock);
         parameters.addValue("date", historicalQuote.getDate());
         parameters.addValue("open", historicalQuote.getOpen());
         parameters.addValue("low", historicalQuote.getLow());

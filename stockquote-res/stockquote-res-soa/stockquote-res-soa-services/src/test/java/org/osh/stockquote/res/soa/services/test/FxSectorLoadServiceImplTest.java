@@ -40,7 +40,9 @@ public class FxSectorLoadServiceImplTest {
 		//fxSectorLoadService.loadCompany(urllinux);
 		//fxSectorLoadService.loadSymbol(urllinux, 1);
 		
-		fxSectorLoadService.loadStock(urllinux, 1);
+		//fxSectorLoadService.loadStock(urllinux, 1);
+		fxSectorLoadService.loadHistoryQuote(1);
+
 	}
 	
 	public void loadAmex(){
